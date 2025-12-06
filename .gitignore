@@ -1,0 +1,5 @@
+__pycache__/
+old/
+conf.ini
+server.db
+app.exe
