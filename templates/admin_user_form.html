@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}{% if user %}ユーザー編集{% else %}新規ユーザー{% endif %} - {{ title }}{% endblock %}
+{% block content %}
+<div class="mb-3">
+    <a href="{{ url_for('admin_users') }}" class="text-decoration-none small">&larr; ユーザー一覧に戻る</a>
+    <h2 class="h4 mb-0 mt-1">{% if user %}ユーザー編集{% else %}新規ユーザー{% endif %}</h2>
+</div>
+
+<form method="post" class="card shadow-sm col-lg-6">
+    <div class="card-body">
+        {% if not user %}
+        <div class="mb-3">
+            <label for="username" class="form-label">ユーザー名 <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="username" name="username" required>
+        </div>
+        {% endif %}
+        <div class="mb-3">
+            <label for="display_name" class="form-label">表示名 <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="display_name" name="display_name"
+                value="{{ user.display_name if user else '' }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="role" class="form-label">ロール</label>
+            <select class="form-select" id="role" name="role">
+                {% for r in roles %}
+                <option value="{{ r }}" {% if user and user.role == r %}selected{% elif not user and r == 'user' %}selected{% endif %}>
+                    {{ role_labels[r] }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        {% if user %}
+        <div class="mb-3">
+            <label for="is_active" class="form-label">状態</label>
+            <select class="form-select" id="is_active" name="is_active">
+                <option value="1" {% if user.is_active %}selected{% endif %}>有効</option>
+                <option value="0" {% if not user.is_active %}selected{% endif %}>無効</option>
+            </select>
+        </div>
+        {% endif %}
+        <div class="mb-3">
+            <label for="password" class="form-label">パスワード {% if user %}<span class="text-muted small">（変更する場合のみ入力）</span>{% else %}<span class="text-danger">*</span>{% endif %}</label>
+            <input type="password" class="form-control" id="password" name="password" {% if not user %}required{% endif %}>
+        </div>
+    </div>
+    <div class="card-footer d-flex gap-2">
+        <button type="submit" class="btn btn-primary">{% if user %}更新{% else %}作成{% endif %}</button>
+        <a href="{{ url_for('admin_users') }}" class="btn btn-outline-secondary">キャンセル</a>
+    </div>
+</form>
+{% endblock %}

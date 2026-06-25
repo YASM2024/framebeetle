@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}操作ログ - {{ title }}{% endblock %}
+{% block content %}
+<div class="mb-3">
+    <h2 class="h4 mb-1">操作ログ</h2>
+    <p class="text-muted small mb-0">直近 200 件の操作履歴です。問題が起きたときは、この画面の内容を管理者やサポートに伝えてください。</p>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-sm table-striped align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>日時</th>
+                <th>ユーザー</th>
+                <th>操作</th>
+                <th>対象</th>
+                <th>詳細</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td class="text-nowrap">{{ log.created_at }}</td>
+                <td>{{ log.username }}</td>
+                <td>{{ log.action }}</td>
+                <td>{{ log.target }}</td>
+                <td>{{ log.detail or '' }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5" class="text-muted">ログはまだありません。</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

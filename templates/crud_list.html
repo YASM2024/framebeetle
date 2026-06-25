@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}{{ form_def.title }} - {{ title }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <a href="{{ url_for('home') }}" class="text-decoration-none small">&larr; メニューに戻る</a>
+        <h2 class="h4 mb-0 mt-1">{{ form_def.title }}</h2>
+    </div>
+    {% if can_create %}
+    <a href="{{ url_for('form_new', form_id=form_def.id) }}" class="btn btn-primary">新規登録</a>
+    {% endif %}
+</div>
+
+{% set field_labels = {} %}
+{% for field in form_def.fields %}
+{% set _ = field_labels.update({field.name: field.label}) %}
+{% endfor %}
+
+{% if records %}
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                {% for col in list_cols %}
+                <th>{{ field_labels.get(col, col) }}</th>
+                {% endfor %}
+                <th>登録者</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in records %}
+            <tr>
+                <td>{{ row.id }}</td>
+                {% for col in list_cols %}
+                <td>
+                    {% if col == 'created_at' or col == 'updated_at' %}
+                    {{ row[col] }}
+                    {% elif row[col] in [0, 1] and col.startswith('is_') %}
+                    {{ 'はい' if row[col] else 'いいえ' }}
+                    {% else %}
+                    {{ row[col] }}
+                    {% endif %}
+                </td>
+                {% endfor %}
+                <td>{{ row.created_by }}</td>
+                <td class="text-end text-nowrap">
+                    {% if can_edit %}
+                    <a href="{{ url_for('form_edit', form_id=form_def.id, record_id=row.id) }}" class="btn btn-sm btn-outline-secondary">編集</a>
+                    {% endif %}
+                    {% if can_delete %}
+                    <form method="post" action="{{ url_for('form_delete', form_id=form_def.id, record_id=row.id) }}" class="d-inline" onsubmit="return confirm('削除してよろしいですか？');">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">削除</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-secondary">データがありません。{% if can_create %}「新規登録」から追加してください。{% endif %}</div>
+{% endif %}
+{% endblock %}

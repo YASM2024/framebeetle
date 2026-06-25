@@ -7,6 +7,8 @@ def setup(log_type: str):
 
     # ログディレクトリを取得（なければ作成）
     log_dir = c.get('logging', 'log_dir')
+    if not os.path.isabs(log_dir):
+        log_dir = os.path.join(c.base_dir, log_dir)
     os.makedirs(log_dir, exist_ok=True)
     
     # ログファイルのパスを作成

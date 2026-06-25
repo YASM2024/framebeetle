@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}{% if is_new %}新規登録{% else %}編集{% endif %} - {{ form_def.title }}{% endblock %}
+{% block content %}
+<div class="mb-3">
+    <a href="{{ url_for('form_list', form_id=form_def.id) }}" class="text-decoration-none small">&larr; 一覧に戻る</a>
+    <h2 class="h4 mb-0 mt-1">{% if is_new %}新規登録{% else %}編集{% endif %}：{{ form_def.title }}</h2>
+</div>
+
+<form method="post" class="card shadow-sm">
+    <div class="card-body">
+        {% for field in form_def.fields %}
+        <div class="mb-3">
+            <label class="form-label" for="{{ field.name }}">
+                {{ field.label }}{% if field.required %} <span class="text-danger">*</span>{% endif %}
+            </label>
+
+            {% if field.type == 'textarea' %}
+            <textarea class="form-control" id="{{ field.name }}" name="{{ field.name }}" rows="4" {% if field.required %}required{% endif %}>{{ record.get(field.name, '') }}</textarea>
+
+            {% elif field.type == 'select' %}
+            <select class="form-select" id="{{ field.name }}" name="{{ field.name }}" {% if field.required %}required{% endif %}>
+                <option value="">選択してください</option>
+                {% for opt in field.options %}
+                <option value="{{ opt }}" {% if record.get(field.name, '') == opt %}selected{% endif %}>{{ opt }}</option>
+                {% endfor %}
+            </select>
+
+            {% elif field.type == 'checkbox' %}
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="{{ field.name }}" name="{{ field.name }}" value="1"
+                    {% if record.get(field.name) in [1, '1', True, 'on'] %}checked{% endif %}>
+                <label class="form-check-label" for="{{ field.name }}">{{ field.label }}</label>
+            </div>
+
+            {% elif field.type == 'number' %}
+            <input type="number" step="any" class="form-control" id="{{ field.name }}" name="{{ field.name }}"
+                value="{{ record.get(field.name, '') }}" {% if field.required %}required{% endif %}>
+
+            {% elif field.type == 'date' %}
+            <input type="date" class="form-control" id="{{ field.name }}" name="{{ field.name }}"
+                value="{{ record.get(field.name, '') }}" {% if field.required %}required{% endif %}>
+
+            {% else %}
+            <input type="{{ 'email' if field.type == 'email' else 'text' }}" class="form-control" id="{{ field.name }}" name="{{ field.name }}"
+                value="{{ record.get(field.name, '') }}" {% if field.required %}required{% endif %}>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    <div class="card-footer d-flex gap-2">
+        <button type="submit" class="btn btn-primary">{% if is_new %}登録{% else %}更新{% endif %}</button>
+        <a href="{{ url_for('form_list', form_id=form_def.id) }}" class="btn btn-outline-secondary">キャンセル</a>
+    </div>
+</form>
+{% endblock %}

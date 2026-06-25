@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}ユーザー管理 - {{ title }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h4 mb-0">ユーザー管理</h2>
+    <a href="{{ url_for('admin_user_new') }}" class="btn btn-primary">新規ユーザー</a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>ユーザー名</th>
+                <th>表示名</th>
+                <th>ロール</th>
+                <th>状態</th>
+                <th>作成日</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in users %}
+            <tr>
+                <td>{{ u.id }}</td>
+                <td>{{ u.username }}</td>
+                <td>{{ u.display_name }}</td>
+                <td>{{ role_labels[u.role] }}</td>
+                <td>{{ '有効' if u.is_active else '無効' }}</td>
+                <td>{{ u.created_at }}</td>
+                <td class="text-end text-nowrap">
+                    <a href="{{ url_for('admin_user_edit', user_id=u.id) }}" class="btn btn-sm btn-outline-secondary">編集</a>
+                    <form method="post" action="{{ url_for('admin_user_delete', user_id=u.id) }}" class="d-inline" onsubmit="return confirm('このユーザーを削除しますか？');">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">削除</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+id: payments
+title: 入金登録
+description: 入金情報を登録します
+table: payments
+roles:
+  view: [admin, user]
+  create: [admin, user]
+  edit: [admin]
+  delete: [admin]
+list_columns: [payer, amount, payment_date, created_at]
+fields:
+  - name: payer
+    label: 支払者
+    type: text
+    required: true
+  - name: amount
+    label: 金額（円）
+    type: number
+    required: true
+  - name: payment_date
+    label: 入金日
+    type: date
+    required: true
+  - name: note
+    label: 備考
+    type: textarea

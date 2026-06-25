@@ -1,0 +1,23 @@
+id: reports
+title: 報告登録
+description: 日々の業務報告を登録します
+table: reports
+roles:
+  view: [admin, user]
+  create: [admin, user]
+  edit: [admin, user]
+  delete: [admin]
+list_columns: [content, category, created_at]
+fields:
+  - name: category
+    label: 分類
+    type: select
+    required: true
+    options: [一般, 緊急, その他]
+  - name: content
+    label: 内容
+    type: textarea
+    required: true
+  - name: is_done
+    label: 対応済み
+    type: checkbox
